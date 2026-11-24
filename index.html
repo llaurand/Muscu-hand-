@@ -74,7 +74,7 @@ th{font-size:13px;color:var(--mut);font-weight:600}td.n{text-align:right;white-s
 .log td input{width:64px;min-height:40px;padding:6px}.log td:first-child{min-width:130px;font-size:14px}
 .log .cur{background:light-dark(#fff1e8,#2a1a10)}
 ul{padding-left:20px;margin:6px 0}
-.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--card);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding-bottom:env(safe-area-inset-bottom)}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--card);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(6,minmax(0,1fr));padding-bottom:env(safe-area-inset-bottom)}
 .tabs button{border:0;background:none;color:var(--mut);font:600 12px Barlow;min-height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer}
 .tabs button[aria-current=page]{color:var(--org)}
 .tabs svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -85,6 +85,10 @@ ul{padding-left:20px;margin:6px 0}
 #timer button{min-height:44px;border-radius:12px;border:0;padding:0 12px;font:700 15px Barlow;cursor:pointer;background:rgba(255,255,255,.15);color:#fff}
 #timer.done{background:var(--org);color:#1a0a00}#timer.done .l{color:#1a0a00}
 @media(prefers-reduced-motion:no-preference){#timer.done{animation:pulse .6s ease 3}@keyframes pulse{50%{transform:scale(1.03)}}}
+.sug{display:flex;gap:10px;align-items:center;justify-content:space-between;background:light-dark(#fff1e8,#2a1a10);border-radius:12px;padding:10px 12px;margin:8px 0}.feel{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px}.feel .chip{min-height:40px}.t-f{background:#ffd2b3;color:#1a0a00}
+.bar{height:14px;background:var(--soft);border-radius:99px;overflow:hidden;margin:8px 0}.bar i{display:block;height:100%;background:var(--org);transition:width .3s}
+.foods{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.foods .chip{min-height:44px;text-align:left;line-height:1.2;padding:6px 10px}.foods small{display:block;color:var(--mut);font-weight:500}
+.meal{padding:12px 0;border-bottom:1px solid var(--line)}.meal:last-child{border:0}.meal b{font-size:17px}.meal p{margin:4px 0 0}.tagm{display:inline-block;font-size:12px;font-weight:600;border-radius:6px;padding:2px 7px;margin-left:6px;background:light-dark(#e8eef8,#1a2a45);color:light-dark(#0b3a75,#a9c6f0);white-space:nowrap}
 .hist li{margin:4px 0}
 </style>
 </head>
@@ -96,23 +100,43 @@ ul{padding-left:20px;margin:6px 0}
  <div class="card"><h3>Semaine en cours</h3><p class="mut" id="phase"></p><div class="chips" id="wks" role="group" aria-label="Choisir la semaine"></div></div>
  <div class="card"><h3>Ta semaine type</h3><p class="mut">Jusqu'à la reprise des matchs le 8 janvier</p><div class="days" id="days"></div></div>
  <div class="card"><h3>Démarrer une séance</h3><div style="display:grid;gap:10px;margin-top:10px">
-  <button class="btn" data-start="A">Séance A · Force</button><button class="btn s" data-start="B">Séance B · Explosivité</button><button class="btn s" data-start="T">Séance terrain</button></div></div>
+  <button class="btn" data-start="A">Séance A · Force</button><button class="btn s" data-start="B">Séance B · Explosivité</button><button class="btn s" data-start="F">Séance F · Fessiers (samedi)</button><button class="btn s" data-start="T">Séance terrain</button></div></div>
  <div class="card"><h3>Dernières séances</h3><ul class="hist" id="hist"></ul></div>
 </section>
 
 <section class="view" id="v-seance"><div id="run"></div></section>
 
 <section class="view" id="v-exos">
- <div class="seg" id="seg" role="group" aria-label="Catégorie"><button data-g="W" aria-pressed="true">Échauffement</button><button data-g="A" aria-pressed="false">Séance A</button><button data-g="B" aria-pressed="false">Séance B</button></div>
+ <div class="seg" id="seg" role="group" aria-label="Catégorie"><button data-g="W" aria-pressed="true">Échauffement</button><button data-g="A" aria-pressed="false">Séance A</button><button data-g="B" aria-pressed="false">Séance B</button><button data-g="F" aria-pressed="false">Fessiers</button></div>
  <p class="mut" style="margin-top:0">Sur chaque dessin : à gauche le départ, à droite l'arrivée du mouvement.</p>
  <div class="grid" id="lib"></div>
 </section>
 
 <section class="view" id="v-carnet">
- <div class="card"><h3>Tes charges (kg)</h3><p class="mut">Tu peux les modifier ici, ou pendant la séance. La colonne de la semaine en cours est en orange. Les données sont enregistrées sur ce téléphone, dans ce navigateur.</p>
+ <div class="card"><h3>Tes charges (kg)</h3><p class="mut">Tu peux les modifier ici, ou pendant la séance. La colonne de la semaine en cours est en orange : une case vide y affiche en gris la charge conseillée. Pour les haltères, note le poids d'un seul haltère. Les données sont enregistrées sur ce téléphone, dans ce navigateur.</p>
  <h3 style="margin-top:14px;font-size:19px">Séance A</h3><div class="scroll"><table class="log" id="logA"></table></div>
- <h3 style="margin-top:18px;font-size:19px">Séance B</h3><div class="scroll"><table class="log" id="logB"></table></div></div>
+ <h3 style="margin-top:18px;font-size:19px">Séance B</h3><div class="scroll"><table class="log" id="logB"></table></div>
+ <h3 style="margin-top:18px;font-size:19px">Séance F · Fessiers</h3><div class="scroll"><table class="log" id="logF"></table></div></div>
  <div class="card"><h3>Historique</h3><ul class="hist" id="hist2"></ul></div>
+</section>
+
+<section class="view" id="v-repas">
+ <div class="card hero"><p class="mut" style="margin:0">Protéines aujourd'hui</p><p class="big" id="ptot">0 g</p><div class="bar" style="background:rgba(255,255,255,.2)"><i id="pbar" style="width:0"></i></div><p class="mut" style="margin:0">Objectif : 90 à 110 g par jour</p></div>
+ <div class="card"><h3>J'ai mangé…</h3><p class="mut">Touche ce que tu manges, ça s'additionne. Remis à zéro chaque jour.</p><div class="foods" id="foods"></div>
+ <div class="row" style="margin-top:12px"><button class="btn s" id="pundo">Annuler le dernier</button><button class="btn s" id="preset">Remettre à 0</button></div><ul class="hist" id="plog" style="margin-top:10px"></ul></div>
+ <div class="seg" id="mseg" role="group" aria-label="Moment"><button data-m="matin" aria-pressed="true">Matin</button><button data-m="midi" aria-pressed="false">Midi</button><button data-m="soir" aria-pressed="false">Soir</button><button data-m="coll" aria-pressed="false">Collation</button></div>
+ <div class="card" id="meals"></div>
+ <div class="card"><h3>Les jours de séance</h3><ul>
+ <li><b>2 à 3 h avant</b> : un repas avec des féculents (riz, pâtes, pain, pommes de terre) pour avoir de l'énergie.</li>
+ <li><b>Dans les 2 h après</b> : protéines + glucides. Une collation ou un repas, c'est pareil.</li>
+ <li><b>Pour prendre des fesses</b> : ne saute aucun repas les jours de séance, et ajoute une collation.</li>
+ <li><b>Bois</b> 1,5 à 2 L d'eau, plus avec la créatine.</li></ul></div>
+ <div class="card"><h3>Adapté pour toi</h3><ul>
+ <li>Aucun produit de vache : chèvre, brebis et boissons végétales à la place.</li>
+ <li>Soja de temps en temps seulement : les aliments au soja sont marqués.</li>
+ <li>Pour limiter les perturbateurs endocriniens : réchauffe dans du verre plutôt que dans du plastique, et préfère les bocaux en verre ou les surgelés aux conserves quand tu peux.</li>
+ <li>Avec ton endométriose, une diététicienne peut t'aider à affiner ces repères.</li></ul></div>
+ <p class="mut">Les quantités de protéines sont des estimations.</p>
 </section>
 
 <section class="view" id="v-infos">
@@ -132,14 +156,16 @@ ul{padding-left:20px;margin:6px 0}
  <li><b>Protéines</b> : 90 à 110 g par jour, une portion à chaque repas.</li>
  <li><b>Suivi</b> : environ +0,5 kg par mois. Si ton poids ne bouge pas en 3 ou 4 semaines, mange un peu plus.</li>
  <li><b>Sommeil</b> : 7 à 8 h, et 8 h la veille des grosses séances.</li></ul>
- <table><tbody><tr><td>3 repas avec une portion de protéines</td><td class="n">≈ 60-75 g</td></tr><tr><td>Mix Alter Nutrition, 2 portions (30 g)</td><td class="n">≈ 13 g</td></tr><tr><td>Skyr ou fromage blanc, 150 g</td><td class="n">≈ 12-15 g</td></tr><tr><td><b>Total</b></td><td class="n"><b>≈ 85-103 g</b></td></tr></tbody></table></div>
- <div class="card"><h3>Collation type</h3><p class="mut">Après la séance ou dans l'après-midi · ≈ 30 g de protéines, ≈ 400 kcal</p><ul><li>2 c. à soupe du mix (30 g) + 3 g de créatine</li><li>150 g de skyr + 200 ml de lait ou de boisson végétale</li><li>1 banane ou 40 g de flocons d'avoine</li></ul></div>
+ <table><tbody><tr><td>3 repas avec une portion de protéines</td><td class="n">≈ 60-75 g</td></tr><tr><td>Mix Alter Nutrition, 2 portions (30 g)</td><td class="n">≈ 13 g</td></tr><tr><td>Yaourt de brebis ou 2 œufs</td><td class="n">≈ 6-12 g</td></tr><tr><td><b>Total</b></td><td class="n"><b>≈ 85-103 g</b></td></tr></tbody></table></div>
+ <div class="card"><h3>Collation type</h3><p class="mut">Après la séance ou dans l'après-midi · ≈ 20 g de protéines, ≈ 400 kcal · plus d'idées dans l'onglet Repas</p><ul><li>2 c. à soupe du mix (30 g) + 3 g de créatine</li><li>200 ml de boisson à l'avoine ou à l'amande + 1 yaourt de brebis</li><li>1 banane ou 40 g de flocons d'avoine</li></ul></div>
  <div class="card"><h3>Compléments</h3><ul><li><b>Créatine</b> : 3 g par jour, tous les jours, sans phase de charge. Bois bien. Le +1 à 2 kg du début, c'est de l'eau dans les muscles.</li><li><b>Mix Alter Nutrition</b> : 6,6 g de protéines par portion, 3 portions par jour maximum. Pour la suite, une protéine en poudre classique (20-25 g par dose) sera plus rentable.</li></ul></div>
+ <div class="card"><h3>Calcul des charges</h3><ul><li>À la fin des séries d'un exercice, touche ton <b>ressenti</b> : Facile (3 répétitions ou plus en réserve), Parfait (1-2), Dur (0).</li><li><b>Facile</b> et toutes les séries faites : +2 paliers. <b>Parfait</b> : +1 palier. <b>Dur</b> ou séries ratées : même charge.</li><li>Palier : +2,5 kg à la barre et aux machines, +2 kg par haltère, +5 kg au hip thrust et à l'abduction. Haut du corps : jamais plus d'1 palier à la fois.</li><li>S4 et S7 : −10 % automatiquement. S5 : +1 palier en plus sur les exercices passés en 5 × 4.</li><li>Haut du corps : si l'épaule tire, garde la même charge, même si l'appli propose plus.</li></ul></div>
+ <div class="card"><h3>Séance F · Fessiers (samedi, option)</h3><ul><li>Objectif : <b>prise de masse des fessiers</b>. Environ 45 min, des séries de 10 à 20 répétitions.</li><li>Pour que ça marche : charge qui augmente chaque semaine, et manger assez (onglet Repas). Compte 3 à 6 mois pour voir la différence.</li><li>Fais-la si tes jambes sont fraîches après le hand du vendredi.</li><li>C'est elle <b>ou</b> la séance terrain, pas les deux.</li><li>Pas de séance F en S4 ni en S7.</li></ul></div>
  <div class="card"><h3>Les règles</h3><ul>
  <li><b>Pas d'échec en haut du corps</b> : garde 1 à 2 répétitions en réserve pour gagner de la force sans prendre de volume.</li>
  <li><b>Épaule</b> : douleur au-dessus de 3/10, ou plus forte le lendemain → remplace l'exercice et parles-en à ton kiné.</li>
  <li><b>Technique avant la charge.</b></li>
- <li><b>Lundi et mercredi</b> : kiné, pas de muscu.</li>
+ <li><b>Lundi et mercredi</b> : kiné, pas de muscu.</li><li><b>Samedi</b> : séance fessiers ou terrain, en option.</li>
  <li><b>Hand le mardi soir</b> : fais la séance A au moins 4 h avant.</li>
  <li><b>Après le 8 janvier</b> : séance A au moins 72 h avant le match, séance B au moins 48 h avant, jamais la veille.</li></ul></div>
 </section>
@@ -152,6 +178,7 @@ ul{padding-left:20px;margin:6px 0}
  <button data-v="seance"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z"/></svg>Séance</button>
  <button data-v="exos"><svg viewBox="0 0 24 24"><path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"/></svg>Exos</button>
  <button data-v="carnet"><svg viewBox="0 0 24 24"><path d="M5 3h12a2 2 0 0 1 2 2v16H7a2 2 0 0 1-2-2z"/><path d="M9 8h6M9 12h6"/></svg>Carnet</button>
+ <button data-v="repas"><svg viewBox="0 0 24 24"><path d="M7 3v8a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V3M9 13v8M17 3c-2 2-2 6 0 8v10"/></svg>Repas</button>
  <button data-v="infos"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>Infos</button>
 </nav>
 
@@ -192,7 +219,7 @@ const A=[
  P:[{...stand,e1:[48,60],w1:[56,47],o:[['c',58,47,10]]},{h:[76,62],n:[68,73],p:[48,100],k1:[78,106],f1:[62,130],e1:[56,84],w1:[64,72],o:[['c',66,72,10]]}]},
 {id:'rdl',n:'Soulevé de terre roumain',s:'3 × 8',r:'2 min',c:['Genoux légèrement fléchis, ils bougent à peine','Recule les fesses : la barre glisse le long des cuisses','Arrête-toi quand l’arrière des cuisses tire, dos plat'],
  P:[{...stand,e1:[62,67],w1:[63,84],o:[['c',63,86,10]]},{h:[92,64],n:[80,70],p:[46,84],k1:[56,107],f1:[58,130],e1:[80,88],w1:[78,104],o:[['c',78,106,10]]}]},
-{id:'bulgare',n:'Fentes bulgares',s:'3 × 8 / jambe',r:'1 min 30',c:['Pied arrière posé sur le banc','Descends à la verticale, genou arrière vers le sol','Pousse dans le talon avant pour remonter'],
+{id:'bulgare',n:'Fentes bulgares',s:'3 × 8 / jambe',r:'1 min 30',c:['Pied arrière posé sur le banc, buste légèrement penché en avant (plus de fessiers)','Descends en contrôlant, genou arrière vers le sol','Pousse dans le talon avant pour remonter'],
  P:[{h:[60,32],n:[60,46],p:[58,80],k1:[72,102],f1:[78,130],k2:[44,98],f2:[30,110],e1:[56,62],w1:[56,78],o:[['d',56,80]],u:[['r',6,110,34,20]]},{h:[59,50],n:[58,62],p:[56,96],k1:[80,100],f1:[80,130],k2:[44,120],f2:[30,110],e1:[56,78],w1:[56,94],o:[['d',56,96]],u:[['r',6,110,34,20]]}]},
 {id:'rowing',n:'Rowing haltère un bras',s:'4 × 5-6',r:'2 min',c:['Genou et main sur le banc, dos plat','Tire le coude vers la hanche','Serre l’omoplate en haut, redescends lentement'],
  P:M({...rowBase,e1:[72,96],w1:[72,112],o:[['d',72,114]]},{e1:[60,70],w1:[66,86],o:[['d',66,88]]})},
@@ -249,13 +276,52 @@ const WU=[
 const $=id=>document.getElementById(id);
 const ls={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},raw(k){try{return localStorage.getItem(k)||''}catch(e){return''}},rawSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 
+
+const F=[
+{id:'hipu',n:'Hip thrust sur une jambe',s:'4 × 10-12 / jambe',r:'1 min 30',c:['Haut du dos sur le banc, un pied au sol, l’autre genou ramené vers toi','Pousse dans le talon et monte les hanches bien droites','Serre la fesse 2 s en haut. Plus dur : un haltère sur la hanche'],
+ P:[{h:[16,90],n:[26,96],p:[52,118],k1:[74,104],f1:[80,130],k2:[62,98],f2:[74,92],e1:[36,106],w1:[46,112],u:[['r',2,98,26,32]]},{h:[16,90],n:[26,95],p:[58,96],k1:[80,94],f1:[80,130],k2:[70,78],f2:[84,72],e1:[40,100],w1:[54,96],u:[['r',2,98,26,32]]}]},
+{id:'stepup',n:'Step-up sur banc, haltères',s:'4 × 10 / jambe',r:'1 min 30',c:['Pied entier sur un banc ou une box à hauteur de genou','Pousse seulement avec la jambe du haut, sans t’aider du pied au sol','Redescends lentement, en 2 à 3 s'],
+ P:[{u:[['r',66,96,40,34]],h:[44,38],n:[44,50],p:[44,84],k1:[64,76],f1:[72,96],k2:[44,107],f2:[42,130],e1:[44,66],w1:[44,82],o:[['d',44,84]]},{u:[['r',66,96,40,34]],h:[80,10],n:[80,22],p:[80,56],k1:[81,76],f1:[80,96],k2:[74,76],f2:[72,96],e1:[80,38],w1:[80,54],o:[['d',80,56]]}]},
+{id:'abd',n:'Abduction à la machine',s:'4 × 15-20',r:'1 min',c:['Assise bien au fond, buste légèrement penché en avant','Écarte les genoux le plus loin possible','Dernière série : va jusqu’à ce que tu ne puisses plus, c’est sans risque pour l’épaule'],
+ P:M({...sym,u:[['r',46,36,28,56],['r',36,90,48,8],['r',56,98,8,32]],h:[60,40],n:[60,52],p:[60,88],k1:[48,98],f1:[48,126],k2:[72,98],f2:[72,126],e1:[48,70],w1:[44,90],e2:[72,70],w2:[76,90],o:[['c',42,98,5],['c',78,98,5]]},{k1:[34,96],f1:[38,126],k2:[86,96],f2:[82,126],o:[['c',28,96,5],['c',92,96,5]]})},
+{id:'kick',n:'Kickback à la poulie',s:'3 × 12-15 / jambe',r:'1 min',c:['Sangle à la cheville, mains sur la machine, buste légèrement penché','Pousse la jambe vers l’arrière avec la fesse, sans cambrer','Contrôle le retour, le genou reste presque tendu'],
+ P:M({eq:1,nf:1,u:[['r',104,10,8,120]],h:[86,46],n:[78,54],p:[56,80],k2:[58,104],f2:[60,130],e1:[92,62],w1:[104,62],k1:[52,104],f1:[48,126],o:[['l',48,126,104,124]]},{k1:[36,96],f1:[18,108],o:[['l',18,108,104,124]]})},
+{id:'hyper',n:'Extension lombaire 45° (fessiers)',s:'3 × 12-15',r:'1 min',c:['Bassin juste au-dessus du coussin, dos légèrement arrondi','Remonte en serrant les fesses, sans cambrer','Arrête-toi quand le corps est aligné. Plus dur : un disque contre la poitrine'],
+ P:M({nf:1,u:[['b',20,128,56,92],['b',48,98,62,84]],h:[80,118],n:[72,108],p:[52,84],k1:[36,104],f1:[22,124],e1:[66,100],w1:[72,94]},{h:[84,42],n:[78,52],e1:[72,64],w1:[76,58]})}
+];
+Object.assign(DUO,{hipu:[1,'','Exercice principal : commence par lui'],stepup:[2,'Abduction machine'],abd:[2,'Step-up'],kick:[3,'Extension lombaire'],hyper:[3,'Kickback poulie']});
+const INC={squat:2.5,rdl:2.5,bulgare:2,rowing:2,dc:2,legcurl:2.5,hip:5,lat:2,tirage:2.5,landmine:2.5,facepull:2.5,mollets:2.5,hipu:2,stepup:2,abd:5,kick:2.5,hyper:2.5};
+const UP=['rowing','dc','tirage','landmine','facepull'];const DB=['bulgare','dc','lat','stepup','rowing'],HEAVY5=['squat','rowing','dc','tirage','landmine'];
+const ALL=[...A,...B,...F];
+const FEEL={e:'Facile',p:'Parfait',d:'Dur'};
+const num=v=>{v=String(v||'').replace(/,/g,'.');const x=v.match(/(\d+(?:\.\d+)?)\s*[x×*]\s*(\d+(?:\.\d+)?)/i);if(x)return +x[2];const m=v.match(/\d+(?:\.\d+)?/);return m?+m[0]:null};
+const fmtKg=v=>String(+(+v).toFixed(2)).replace('.',',');
+const okFor=id=>{const x=ALL.find(e=>e.id===id);if(!x||!R)return true;const n=nSets(x);let c=0;for(let i=0;i<n;i++)if(R.done[id+'-'+i])c++;return c>=n};
+const sug=x=>{const inc=INC[x.id];if(!inc)return null;let j=0,base=null;
+ for(let i=wk-1;i>=1;i--){if(i===4||i===7)continue;const v=num(ls.raw(`w${i}-${x.id}`));if(v!==null){j=i;base=v;break}}
+ if(base===null)return null;
+ const r=ls.get(`r${j}-${x.id}`,null),step=inc>=2.5?1.25:0.5,rd=v=>Math.round(v/step)*step;let next=base,why;
+ if(wk===4||wk===7){next=rd(base*0.9);why='semaine légère : −10 %'}
+ else{if(!r)why='ressenti non noté : même charge';
+  else if(!r.ok||r.f==='d')why=r.ok?'c’était dur : même charge':'séries pas toutes faites : même charge';
+  else if(r.f==='e'){const k=UP.includes(x.id)?1:2;next=base+k*inc;why='facile : +'+fmtKg(k*inc)+' kg'+(k===1?' (haut du corps : 1 palier max)':'')}
+  else{next=base+inc;why='parfait : +'+fmtKg(inc)+' kg'}
+  if(wk===5&&HEAVY5.includes(x.id)&&j<5){next+=inc;why+=', +'+fmtKg(inc)+' kg car moins de répétitions'}}
+ if(DB.includes(x.id))why+=' · prends l’haltère le plus proche';
+ return{v:fmtKg(next),txt:`S${j} : ${fmtKg(base)} kg${r?' · '+FEEL[r.f]:''} → ${why}`}};
+const sugBox=x=>{if(!INC[x.id])return'';const s=sug(x);if(!s)return`<p class="hint">Note ta charge et ton ressenti : l’appli calculera celle de la semaine suivante.</p>`;
+ return`<div class="sug"><div><b>Conseillé : ${s.v} kg</b><br><span class="mut">${s.txt}</span></div><button class="chip" type="button" data-use="${x.id}" data-v="${s.v}">Utiliser</button></div>`};
+const feelBox=x=>{if(!INC[x.id])return'';const r=ls.get(`r${wk}-${x.id}`,null);
+ return`<div class="feel" role="group" aria-label="Ressenti"><span class="mut">Ressenti :</span>${['e','p','d'].map(f=>`<button class="chip" type="button" data-feel="${x.id}|${f}" aria-pressed="${!!r&&r.f===f}">${FEEL[f]}</button>`).join('')}</div><p class="hint" style="margin-top:4px">Facile : 3 rép. ou plus en réserve · Parfait : 1-2 · Dur : 0</p>`};
+{const SEED={squat:['40','p'],rdl:['40','d'],bulgare:['10','d'],rowing:['12,5','e'],dc:['10','e'],legcurl:['30','d']};
+ if(!ls.raw('seedS1')){for(const k in SEED){if(!ls.raw('w1-'+k))ls.rawSet('w1-'+k,SEED[k][0]);ls.set('r1-'+k,{f:SEED[k][1],ok:true})}ls.rawSet('seedS1','1')}}
 const START=new Date(2026,10,23);
 const autoWk=()=>Math.min(7,Math.max(1,Math.floor((Date.now()-START)/6048e5)+1));
 let wk=ls.get('wkManual',0)||autoWk();
 const PH={1:'Trouve tes charges, 2 répétitions en réserve.',2:'Trouve tes charges, 2 répétitions en réserve.',3:'Ajoute un peu de charge si tout est réussi.',4:'Semaine légère : 1 série de moins.',5:'Plus lourd : squat et haut du corps en 5 × 4.',6:'Plus lourd : squat et haut du corps en 5 × 4.',7:'Reprise : seulement la séance B, allégée.'};
 const DATES=['23 nov.','30 nov.','7 déc.','14 déc.','21 déc.','28 déc.','4 janv.'];
-const DAYS=[['Lun',[['k','Kiné']]],['Mar',[['a','Séance A'],['h','+ hand si entraînement']]],['Mer',[['k','Kiné'],['h','Hand si entraînement']]],['Jeu',[['b','Séance B']]],['Ven',[['h','Hand']]],['Sam',[['t','Terrain (option)']]],['Dim',[['r','Repos']]]];
-const NAMES={A:'Séance A · Force',B:'Séance B · Explosivité',T:'Séance terrain'};
+const DAYS=[['Lun',[['k','Kiné']]],['Mar',[['a','Séance A'],['h','+ hand si entraînement']]],['Mer',[['k','Kiné'],['h','Hand si entraînement']]],['Jeu',[['b','Séance B']]],['Ven',[['h','Hand']]],['Sam',[['f','Fessiers (option)'],['t','ou terrain']]],['Dim',[['r','Repos']]]];
+const NAMES={A:'Séance A · Force',B:'Séance B · Explosivité',T:'Séance terrain',F:'Séance F · Fessiers'};
 const TER=[{id:'sprint',n:'Sprints 20 m',s:'10 rép.',c:'À fond, retour en marchant',sets:10},{id:'navette',n:'Navette 5-10-5 m',s:'6 rép.',c:'Appuis bas, pousse fort à chaque changement de direction',sets:6},{id:'feinte',n:'Feinte puis accélération sur 30 m',s:'6 rép.',c:'Comme une contre-attaque',sets:6},{id:'fin',n:'Finisher : fentes sautées',s:'6 × 20 s',c:'40 s de récupération entre chaque',sets:6,rest:40}];
 const FIN={id:'finB',n:'Finisher : fentes sautées',s:'6 × 20 s',c:'40 s de récupération entre chaque. À faire seulement si tu ne fais pas la séance terrain du samedi.',sets:6,rest:40};
 const nSets=x=>{if(x.sets)return x.sets;const m=x.s.match(/^(\d+)\s*×/);let n=m?+m[1]:1;if(wk===4)n=Math.max(1,n-1);if(wk>=5&&wk<=6&&['squat','rowing','dc','tirage','landmine'].includes(x.id))n=5;if(wk===7)n=Math.min(n,2);return n};
@@ -264,8 +330,8 @@ const restSec=r=>{const m=(r||'').match(/(\d+)(?:-\d+)?\s*min(?:\s*(\d+))?/);ret
 const kgKey=id=>`w${wk}-${id}`;
 
 /* ---------- navigation ---------- */
-const VIEWS=['semaine','seance','exos','carnet','infos'],TT={semaine:'Semaine',seance:'Séance',exos:'Exercices',carnet:'Carnet',infos:'Infos'};
-const show=v=>{if(!VIEWS.includes(v))v='semaine';VIEWS.forEach(x=>$('v-'+x).classList.toggle('on',x===v));document.querySelectorAll('.tabs button').forEach(b=>b.dataset.v===v?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current'));$('ttl').textContent=TT[v];if(v==='carnet')renderLog();if(v==='seance')renderRun();if(v==='semaine')renderWeek();window.scrollTo(0,0)};
+const VIEWS=['semaine','seance','exos','carnet','repas','infos'],TT={semaine:'Semaine',seance:'Séance',exos:'Exercices',carnet:'Carnet',repas:'Repas',infos:'Infos'};
+const show=v=>{if(!VIEWS.includes(v))v='semaine';VIEWS.forEach(x=>$('v-'+x).classList.toggle('on',x===v));document.querySelectorAll('.tabs button').forEach(b=>b.dataset.v===v?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current'));$('ttl').textContent=TT[v];if(v==='carnet')renderLog();if(v==='seance')renderRun();if(v==='semaine')renderWeek();if(v==='repas')renderMeals();window.scrollTo(0,0)};
 document.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)location.hash=b.dataset.v});
 window.addEventListener('hashchange',()=>show(location.hash.slice(1)));
 
@@ -274,9 +340,9 @@ const histHTML=()=>{const h=ls.get('hist',[]);return h.length?h.slice(-6).revers
 const renderWeek=()=>{
  $('wkb').textContent='S'+wk;
  const di=(new Date().getDay()+6)%7,[dn,tags]=DAYS[di];
- const code=tags.map(t=>t[0]).find(c=>'abt'.includes(c));
+ const code=tags.map(t=>t[0]).find(c=>'abft'.includes(c));
  const st=code?code.toUpperCase():null;
- $('today').innerHTML=`<p class="mut" style="margin:0">Aujourd'hui · ${dn}</p><p class="big">${tags.map(t=>t[1]).join(' ')}</p>${st&&!(wk===7&&st!=='B')?`<button class="btn w" data-start="${st}">Démarrer ${NAMES[st]}</button>`:'<p class="mut" style="margin:0">Pas de muscu prévue aujourd’hui. Récupère bien.</p>'}`;
+ $('today').innerHTML=`<p class="mut" style="margin:0">Aujourd'hui · ${dn}</p><p class="big">${tags.map(t=>t[1]).join(' ')}</p>${st&&!(wk===7&&st!=='B')&&!(wk===4&&st==='F')?`<button class="btn w" data-start="${st}">Démarrer ${NAMES[st]}</button>`:'<p class="mut" style="margin:0">Pas de muscu prévue aujourd’hui. Récupère bien.</p>'}`;
  $('phase').textContent=`S${wk} · semaine du ${DATES[wk-1]} · ${PH[wk]}`;
  $('wks').innerHTML=[1,2,3,4,5,6,7].map(i=>`<button class="chip" data-wk="${i}" aria-pressed="${i===wk}">S${i}</button>`).join('');
  $('days').innerHTML=DAYS.map(([d,t],i)=>`<div class="day${i===di?' today':''}"><b>${d}</b><div class="tags">${t.map(([c,l])=>`<span class="tag t-${c}">${l}</span>`).join('')}</div></div>`).join('');
@@ -289,14 +355,14 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-start]');i
 let R=ls.get('cur',null);
 const steps=t=>{const out=[{k:'warm'}];
  if(t==='T')TER.forEach(x=>out.push({k:'simple',it:[x]}));
- else{const L=(t==='A'?A:B).slice().sort(byDuo);const g={};L.forEach(x=>{const n=DUO[x.id][0];(g[n]=g[n]||[]).push(x)});Object.keys(g).sort((a,b)=>a-b).forEach(n=>out.push({k:'duo',it:g[n]}));if(t==='B'&&wk!==7)out.push({k:'simple',it:[FIN]})}
+ else{const L=(t==='A'?A:t==='B'?B:F).slice().sort(byDuo);const g={};L.forEach(x=>{const n=DUO[x.id][0];(g[n]=g[n]||[]).push(x)});Object.keys(g).sort((a,b)=>a-b).forEach(n=>out.push({k:'duo',it:g[n]}));if(t==='B'&&wk!==7)out.push({k:'simple',it:[FIN]})}
  out.push({k:'end'});return out};
 const startRun=t=>{R={t,i:0,done:{}};ls.set('cur',R);location.hash='seance';if(location.hash==='#seance')show('seance')};
 const setBtns=(id,n)=>`<div class="sets" role="group" aria-label="Séries">${Array.from({length:n},(_,i)=>`<button class="set" data-set="${id}-${i}" aria-pressed="${!!R.done[id+'-'+i]}">${i+1}</button>`).join('')}</div>`;
-const exBlock=x=>{const d=DUO[x.id];return`<div class="card ex"><h3>${x.n}</h3>${fig(x.P,x.n)}<div class="meta"><span class="pill">${repsTxt(x)}</span><span class="pill g">Repos ${x.r}</span></div>${d&&d[2]?`<p class="hint">${d[2]}</p>`:''}<details><summary>Consignes</summary><ol>${x.c.map(c=>`<li>${c}</li>`).join('')}</ol></details>${setBtns(x.id,nSets(x))}<div class="kg"><label class="mut" for="kg-${x.id}">Charge S${wk}</label><input id="kg-${x.id}" data-kg="${x.id}" inputmode="decimal" placeholder="kg" value="${ls.raw(kgKey(x.id))}"></div></div>`};
+const exBlock=x=>{const d=DUO[x.id];return`<div class="card ex"><h3>${x.n}</h3>${fig(x.P,x.n)}<div class="meta"><span class="pill">${repsTxt(x)}</span><span class="pill g">Repos ${x.r}</span></div>${d&&d[2]?`<p class="hint">${d[2]}</p>`:''}<details><summary>Consignes</summary><ol>${x.c.map(c=>`<li>${c}</li>`).join('')}</ol></details>${sugBox(x)}${setBtns(x.id,nSets(x))}<div class="kg"><label class="mut" for="kg-${x.id}">Charge S${wk}${DB.includes(x.id)?' (1 haltère)':''}</label><input id="kg-${x.id}" data-kg="${x.id}" inputmode="decimal" placeholder="${sug(x)?sug(x).v:'kg'}" value="${ls.raw(kgKey(x.id))}"></div>${feelBox(x)}</div>`};
 const renderRun=()=>{
  const el=$('run');
- if(!R){el.innerHTML=`<div class="card"><h3>Quelle séance ?</h3><p class="mut">${wk===7?'Semaine de reprise : seulement la séance B, allégée.':'Séance A le mardi, séance B le jeudi, terrain le samedi en option.'}</p><div style="display:grid;gap:10px;margin-top:10px"><button class="btn" data-start="A">Séance A · Force</button><button class="btn s" data-start="B">Séance B · Explosivité</button><button class="btn s" data-start="T">Séance terrain</button></div></div>`;return}
+ if(!R){el.innerHTML=`<div class="card"><h3>Quelle séance ?</h3><p class="mut">${wk===7?'Semaine de reprise : seulement la séance B, allégée.':'Séance A le mardi, séance B le jeudi, terrain le samedi en option.'}</p><div style="display:grid;gap:10px;margin-top:10px"><button class="btn" data-start="A">Séance A · Force</button><button class="btn s" data-start="B">Séance B · Explosivité</button><button class="btn s" data-start="F">Séance F · Fessiers (samedi)</button><button class="btn s" data-start="T">Séance terrain</button></div></div>`;return}
  const S=steps(R.t),st=S[Math.min(R.i,S.length-1)],pct=Math.round(R.i/(S.length-1)*100);
  let body='';
  if(st.k==='warm')body=`<div class="card"><h3>Échauffement · 10 min</h3><p class="mut">Coche au fur et à mesure.${R.t!=='T'?' Termine par 2 séries légères du premier exercice.':''}</p>${WU.map(x=>`<div class="wu">${fig(x.P,x.n)}<div><b>${x.n}</b><br><span class="mut">${x.s}</span></div><button class="set" data-set="${x.id}-0" aria-pressed="${!!R.done[x.id+'-0']}" aria-label="Fait">✓</button></div>`).join('')}</div>`;
@@ -307,7 +373,9 @@ const renderRun=()=>{
  el.innerHTML=`<div class="row" style="align-items:center"><h2 style="flex:3">${NAMES[R.t]}</h2><span class="mut" style="flex:1;text-align:right">Étape ${R.i+1}/${S.length}</span></div><div class="prog"><i style="width:${pct}%"></i></div>${body}<div class="row" style="margin-top:6px">${R.i>0?'<button class="btn s" id="prev">Précédent</button>':'<button class="btn s" id="quit">Quitter</button>'}${st.k!=='end'?'<button class="btn" id="next">Suivant</button>':''}</div>`;
 };
 $('run').addEventListener('click',e=>{const t=e.target;
- const sb=t.closest('[data-set]');if(sb){const k=sb.dataset.set;R.done[k]=!R.done[k];sb.setAttribute('aria-pressed',!!R.done[k]);ls.set('cur',R);return}
+ const fb=t.closest('[data-feel]');if(fb){const [id,f]=fb.dataset.feel.split('|');ls.set(`r${wk}-${id}`,{f,ok:okFor(id)});fb.parentElement.querySelectorAll('[data-feel]').forEach(b=>b.setAttribute('aria-pressed',b===fb));return}
+ const ub=t.closest('[data-use]');if(ub){const id=ub.dataset.use,v=ub.dataset.v,inp=$('kg-'+id);if(inp)inp.value=v;ls.rawSet(kgKey(id),v);return}
+ const sb=t.closest('[data-set]');if(sb){const k=sb.dataset.set;R.done[k]=!R.done[k];sb.setAttribute('aria-pressed',!!R.done[k]);ls.set('cur',R);const id=k.replace(/-\d+$/,''),r=ls.get(`r${wk}-${id}`,null);if(r){r.ok=okFor(id);ls.set(`r${wk}-${id}`,r)}return}
  const rb=t.closest('[data-rest]');if(rb){startTimer(+rb.dataset.rest,rb.dataset.lbl);return}
  if(t.closest('#next')){R.i++;ls.set('cur',R);renderRun();window.scrollTo(0,0)}
  else if(t.closest('#prev')){R.i--;ls.set('cur',R);renderRun();window.scrollTo(0,0)}
@@ -329,13 +397,49 @@ $('tstop').addEventListener('click',stopTimer);
 /* ---------- bibliothèque ---------- */
 const libCard=x=>{const d=DUO[x.id];return`<article class="card ex" style="margin:0"><h3>${x.n}</h3>${fig(x.P,x.n)}<div class="meta">${d?`<span class="pill d">Duo ${d[0]}${d[1]?' · avec '+d[1]:' · seul'}</span>`:''}<span class="pill">${x.s}</span>${x.r&&x.r!=='—'&&!WU.includes(x)?`<span class="pill g">Repos ${x.r}</span>`:''}</div>${d&&d[2]?`<p class="hint">${d[2]}</p>`:''}<ol>${x.c.map(c=>`<li>${c}</li>`).join('')}</ol></article>`};
 let lib='W';
-const renderLib=()=>{$('lib').innerHTML=(lib==='W'?WU:(lib==='A'?A:B).slice().sort(byDuo)).map(libCard).join('');document.querySelectorAll('#seg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.g===lib))};
+const renderLib=()=>{$('lib').innerHTML=(lib==='W'?WU:(lib==='A'?A:lib==='B'?B:F).slice().sort(byDuo)).map(libCard).join('');document.querySelectorAll('#seg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.g===lib))};
 $('seg').addEventListener('click',e=>{const b=e.target.closest('button');if(b){lib=b.dataset.g;renderLib()}});
 
 /* ---------- carnet ---------- */
-const renderLog=()=>{for(const [id,L] of [['logA',A],['logB',B]]){
- $(id).innerHTML=`<thead><tr><th>Exercice</th>${[1,2,3,4,5,6,7].map(i=>`<th class="${i===wk?'cur':''}">S${i}</th>`).join('')}</tr></thead><tbody>${L.slice().sort(byDuo).filter(x=>!['box','skater','pallof','cop'].includes(x.id)).map(x=>`<tr><td>${x.n}</td>${[1,2,3,4,5,6,7].map(i=>`<td class="${i===wk?'cur':''}"><input aria-label="${x.n} S${i}" data-lk="w${i}-${x.id}" inputmode="decimal" value="${ls.raw('w'+i+'-'+x.id)}"></td>`).join('')}</tr>`).join('')}</tbody>`}
+const renderLog=()=>{for(const [id,L] of [['logA',A],['logB',B],['logF',F]]){
+ $(id).innerHTML=`<thead><tr><th>Exercice</th>${[1,2,3,4,5,6,7].map(i=>`<th class="${i===wk?'cur':''}">S${i}</th>`).join('')}</tr></thead><tbody>${L.slice().sort(byDuo).filter(x=>INC[x.id]).map(x=>`<tr><td>${x.n}</td>${[1,2,3,4,5,6,7].map(i=>`<td class="${i===wk?'cur':''}"><input aria-label="${x.n} S${i}" data-lk="w${i}-${x.id}" inputmode="decimal" placeholder="${i===wk&&sug(x)?sug(x).v:''}" value="${ls.raw('w'+i+'-'+x.id)}"></td>`).join('')}</tr>`).join('')}</tbody>`}
  $('hist2').innerHTML=histHTML()};
+
+
+/* ---------- repas ---------- */
+const FOODS=[['Œufs × 2',12],['Poulet 120 g',30],['Thon, 1 petite boîte',20],['Saumon 120 g',25],['Steak haché 100 g',21],['Jambon × 2 tranches',12],['Sardines, 1 boîte',15],['Lentilles 200 g',18],['Pois chiches 200 g',14],['Mix Alter 30 g',13],['Yaourt de brebis',6],['Chèvre 30 g',6],['Tofu 100 g · soja',12],['Lait de soja 250 ml · soja',8],['Quinoa 150 g',6],['Pain × 2 tranches',5],['Amandes 30 g',6],['Houmous 50 g',4]];
+const MEALS={matin:[
+ ['Ton classique, renforcé','Chocolat Bonjour au lait d’avoine + créatine, 2 tartines de chèvre, 2 œufs brouillés au micro-ondes (1 min 30).',25],
+ ['Smoothie mangue-banane','Mix 30 g + 200 ml de boisson à l’avoine + mangue surgelée + banane + 40 g de flocons + créatine. Avec un yaourt de brebis à côté.',22,'après séance'],
+ ['Porridge express','50 g de flocons + boisson à l’amande, 2 min au micro-ondes, puis mix 30 g, banane et amandes.',22],
+ ['Tartines salées','Pain complet + houmous + 2 œufs durs (cuits à l’avance) + 1 tranche de jambon.',25]],
+midi:[
+ ['Bowl thon-riz','Riz précuit 2 min + thon (bocal en verre si possible) + maïs + avocat + filet d’huile d’olive.',28,'avant séance'],
+ ['Salade lentilles-œufs','Lentilles en bocal + 2 œufs durs + tomates cerises + chèvre émietté.',30],
+ ['Wrap poulet','Tortilla + poulet rôti déjà cuit + crudités + houmous. Se prépare la veille.',30,'avant séance'],
+ ['Si tu achètes','Un sandwich poulet, thon ou jambon (pas seulement crudités) + 2 œufs durs ou une salade avec protéines + un fruit.',25]],
+soir:[
+ ['Saumon-quinoa','Pavé de saumon à la poêle (ou surgelé) + quinoa précuit + haricots verts surgelés.',30,'après séance'],
+ ['Omelette complète','Omelette de 3 œufs + jambon ou chèvre + pain + salade.',28],
+ ['Steak-pommes de terre','Steak haché à la poêle + pommes de terre au micro-ondes (5 min) + légumes surgelés.',28,'après séance'],
+ ['Poêlée poulet-légumes','Émincé de poulet + légumes surgelés + riz ou nouilles précuits, sauce soja légère.',32,'après séance']],
+coll:[
+ ['Shaker récup','Mix 30 g + boisson à l’avoine + banane + créatine.',14,'après séance'],
+ ['Œufs-pain','2 œufs durs + 1 tranche de pain + 1 fruit.',15,'après séance'],
+ ['Salé rapide','2 tranches de jambon + crackers + 1 compote.',13],
+ ['Sucré','Yaourt de brebis + amandes + miel.',12]]};
+let mom='matin';
+const dkey=()=>{const d=new Date();return'prot-'+d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
+const renderMeals=()=>{const L=ls.get(dkey(),[]),tot=L.reduce((a,i)=>a+FOODS[i][1],0);
+ $('ptot').textContent=tot+' g';$('pbar').style.width=Math.min(100,tot)+'%';
+ $('foods').innerHTML=FOODS.map(([n,g],i)=>`<button class="chip" type="button" data-food="${i}">${n}<small>+${g} g</small></button>`).join('');
+ $('plog').innerHTML=L.length?L.map(i=>`<li>${FOODS[i][0]} · ${FOODS[i][1]} g</li>`).join(''):'<li class="mut">Rien pour l’instant.</li>';
+ document.querySelectorAll('#mseg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===mom));
+ $('meals').innerHTML=MEALS[mom].map(([t,d,g,tag])=>`<div class="meal"><b>${t}</b>${tag?`<span class="tagm">${tag}</span>`:''}<p>${d}</p><p class="mut">≈ ${g} g de protéines · moins de 10 min</p></div>`).join('')};
+$('foods').addEventListener('click',e=>{const b=e.target.closest('[data-food]');if(!b)return;const L=ls.get(dkey(),[]);L.push(+b.dataset.food);ls.set(dkey(),L);renderMeals()});
+$('pundo').addEventListener('click',()=>{const L=ls.get(dkey(),[]);L.pop();ls.set(dkey(),L);renderMeals()});
+$('preset').addEventListener('click',()=>{ls.set(dkey(),[]);renderMeals()});
+$('mseg').addEventListener('click',e=>{const b=e.target.closest('button');if(b){mom=b.dataset.m;renderMeals()}});
 
 renderLib();renderWeek();
 show(location.hash.slice(1)||'semaine');
